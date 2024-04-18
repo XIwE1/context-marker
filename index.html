@@ -183,7 +183,7 @@
       import axios from "axios";
       const root = document.getElementById("app");
       let markItem = null;
-      const cur_operator = "user-B";
+      const cur_operator = "user-A";
       const sources = JSON.parse(localStorage.getItem("markData")) || [];
 
       const tipElement = document.createElement("div");
@@ -211,7 +211,12 @@
       if (sources && sources.length) {
         // const others = sources.filter((item) => item.operator !== cur_operator);
         // const mine = sources.filter((item) => item.operator === cur_operator);
-        sources.forEach(item => item.operator !== cur_operator && item.config && (item.config.lineShape = 'dash'))
+        sources.forEach(
+          (item) =>
+            item.operator !== cur_operator &&
+            item.config &&
+            (item.config.lineShape = "dash")
+        );
         contextMarker.restore(sources);
       }
 
@@ -237,16 +242,17 @@
 
       contextMarker
         // .on('mouseup', (item, position) => {})
-        // .on('click', (id) => {})
+        .on(ContextMarker.event.CLICK, (items) => {})
         .on(ContextMarker.event.CREATE, (item) => {
           console.log("item", item);
           const { endNode, startNode, config } = item;
           const sourceItem = {
-            id: '' + Date.now(),
+            id: "" + Date.now(),
             endNode,
             startNode,
             config,
             operator: cur_operator,
+            create_at: Date.now(),
           };
           sources.push(sourceItem);
           localStorage.setItem("markData", JSON.stringify(sources));

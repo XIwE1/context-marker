@@ -4,7 +4,7 @@ import { RectPosition } from "../types/context";
 import { KONVA_PREFIX } from "../types/enum";
 import { IStage } from "../types/stage";
 
-class Stage implements Partial<IStage> {
+class Stage implements IStage {
   private root: HTMLElement;
 
   private container: HTMLDivElement;
@@ -54,10 +54,20 @@ class Stage implements Partial<IStage> {
     this.layer.add(group);
   }
 
+  deleteItem(id: string): boolean {
+    const index = this.groups.findIndex((i) => i.id === id);
+    if (index === -1) return false;
+    this.groups.splice(index, 1);
+    const group = this.layer.find("#" + id)[0];
+    group && group.destroy();
+    return true;
+  }
+
   clear() {
     this.layer.destroyChildren();
     this.groups = [];
   }
+
   destory(): void {
     this.layer.destroy();
     this.stage.destroy();
@@ -68,7 +78,20 @@ class Stage implements Partial<IStage> {
     const { width, height } = this.getRootRectPosition();
     this.stage.setSize({ width, height });
   }
-
+  getAllGroupIdByPointer(x: number, y: number): string[] {
+    const { top, left } = this.getRootRectPosition();
+    x = x - left;
+    y = y - top;
+    return this.groups
+      .filter((i) => {
+        return i.positions.some((j) => {
+          return (
+            x >= j.x && x <= j.x + j.width && y >= j.y && y <= j.y + j.height
+          );
+        });
+      })
+      .map((i) => i.group.id());
+  }
   private createContainer() {
     const el = document.createElement("div");
     el.style.position = "absolute";

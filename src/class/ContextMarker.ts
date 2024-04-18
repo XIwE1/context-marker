@@ -35,6 +35,7 @@ class ContextMarker
     this.factory = new ContextFactory(this.root, this.marker);
     this.stage = new Stage(this.root);
     this.observeResize();
+    this.observeClick();
   }
 
   render(item: IMarkItem) {
@@ -44,7 +45,7 @@ class ContextMarker
     this.add(item);
     const { id, config } = item;
     // this.stage.renderItem(itemRects, id, this.marker);
-    this.stage.renderItem(itemRects, id, {...defaultMarkerConfig, ...config});
+    this.stage.renderItem(itemRects, id, { ...defaultMarkerConfig, ...config });
     this.clearSelection();
     return true;
   }
@@ -98,7 +99,16 @@ class ContextMarker
     });
     return [DOMRects[0], DOMRects[DOMRects.length - 1]];
   }
-  // getMarkIdByPointer;
+
+  getItemsByPointer(x: number, y: number) {
+    const ids = this.stage.getAllGroupIdByPointer(x, y);
+    if (!ids?.length) return [];
+    const filterItems = Array.from(this.items).filter((item) =>
+      ids.includes(item.id)
+    );
+    return filterItems;
+  }
+
   // getRangePositionsById;
   updateMarkerConfig(config?: IMarkerConfig) {
     this.marker = { ...defaultMarkerConfig, ...config };
@@ -116,11 +126,19 @@ class ContextMarker
     observer.observe(this.root);
   }
 
+  private observeClick() {
+    this.root.addEventListener("click", (e) => {
+      this.emit(
+        EventType.CLICK,
+        this.getItemsByPointer(e.clientX, e.clientY),
+        e
+      );
+    });
+  }
+
   private handleResize() {
-    this.stage.updateStageSize();
     this.clearStage();
-    // size变化时 更改画布大小 重新渲染item对应的rect
-    console.log("items", this.items);
+    this.stage.updateStageSize();
     this.items.forEach((item) => this.render(item));
   }
 

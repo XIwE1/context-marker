@@ -4,12 +4,12 @@
 export interface IFactory {
   /**
    * 根据selection生成MarkItem 用于数据
-   * @param selection 
+   * @param selection
    */
   createSelectionItem(selection: Selection): IMarkItem | null;
   /**
    * 根据MarkItem生成rects 用于渲染
-   * @param markItem 
+   * @param markItem
    */
   createItemRects(markItem: IMarkItem): DOMRect[];
 }
@@ -57,11 +57,13 @@ export type MarkNode = {
 export interface IMarkItem {
   id: string;
   // text: string;
+  length: number;
   startNode: MarkNode;
   endNode: MarkNode;
   config: IMarkerConfig;
   lineVisible?: boolean;
   rectVisible?: boolean;
+  create_at?: number;
   operator?: string;
 }
 
@@ -73,26 +75,31 @@ export interface IContextMarker {
   getSelectionItem(selection: Selection): IMarkItem | null;
   /**
    * 获取selection对应start和end节点的位置
-   * @param selection 
+   * @param selection
    */
   getSelectionRect(selection?: Selection | null): DOMRect[] | null;
   /**
    * 更新画笔的配置
    * @param config 画笔配置
    */
-  updateMarkerConfig(config: IMarkerConfig);
+  updateMarkerConfig(config: IMarkerConfig): void;
   /**
    * 渲染标记项
    */
-  render(markItem: IMarkItem);
+  render(markItem: IMarkItem): boolean;
   /**
    * 添加标记项
    */
-  add(markItem: IMarkItem);
+  add(markItem: IMarkItem): boolean;
   /**
    * 删除对应id的标记项
    */
-  delete(id: string);
+  delete(id: string): boolean;
+  /**
+   * 获取对应id的标记项
+   * @param id
+   */
+  search(id: string): IMarkItem | null;
   /**
    * 将标记项持久化
    */
@@ -102,10 +109,9 @@ export interface IContextMarker {
    */
   restore(items: IMarkItem[]): void;
   /**
-   * 获取对应id的标记项
-   * @param id 
+   * 根据鼠标位置获取相应的所有标记
    */
-  search(id: string): IMarkItem | null;
+  getItemsByPointer(x: number, y: number): Partial<IMarkItem>[];
   /**
    * 清空画布
    */

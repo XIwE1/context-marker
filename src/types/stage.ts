@@ -15,7 +15,7 @@ export interface IStage {
    * 删除对应id的标记
    * @param id
    */
-  deleteMarkItem(id: string): boolean;
+  deleteItem(id: string): boolean;
   /**
    * 清空画布
    */
