@@ -6,7 +6,6 @@ import { IStage } from "../types/stage";
 
 class Stage implements Partial<IStage> {
   private root: HTMLElement;
-  private config: IMarkerConfig;
 
   private container: HTMLDivElement;
   private stage: Konva.Stage;
@@ -17,9 +16,8 @@ class Stage implements Partial<IStage> {
     positions: RectPosition[];
   }> = [];
 
-  constructor(root: HTMLElement, config: IMarkerConfig) {
+  constructor(root: HTMLElement) {
     this.root = root;
-    this.config = config;
     this.container = this.createContainer();
     root.appendChild(this.container);
 
@@ -33,7 +31,7 @@ class Stage implements Partial<IStage> {
     this.stage.add(this.layer);
   }
 
-  renderMarkItem(itemRects: DOMRect[], id: string, config: IMarkerConfig) {
+  renderItem(itemRects: DOMRect[], id: string, config: IMarkerConfig) {
     const { group, rectGroup, lineGroup } = this.createGroup(id, config);
     const { top, left } = this.getRootRectPosition();
     const positions: RectPosition[] = [];
@@ -49,7 +47,8 @@ class Stage implements Partial<IStage> {
       // 记录划线的位置 - 可能为多行
       positions.push(position);
       rectGroup.add(this.createRect(position, config));
-      lineGroup.add(this.createLine(position, config));
+      // lineGroup.add(this.createLine(position, config));
+      lineGroup.add(this.computedLineShape(config.lineShape)(position, config));
     });
     this.groups.push({ id, group, positions });
     this.layer.add(group);
@@ -105,10 +104,38 @@ class Stage implements Partial<IStage> {
     return { group, rectGroup, lineGroup };
   }
 
+  private computedLineShape(type?: string) {
+    if (type === "dash") return this.createDashLine;
+    if (type === "wave") return this.createWaveLine;
+    return this.createLine;
+  }
+
   private createRect(position: RectPosition, config: IMarkerConfig) {
     return new Konva.Rect({
       ...position,
       fill: config.rectFill,
+    });
+  }
+  private createWaveLine(position: RectPosition, config: IMarkerConfig) {
+    const { x, y, width, height } = position;
+    const waveWidth = 12; // 波浪的宽度
+    const waveHeight = 2; // 波浪线的高度
+    const numWaves = Math.ceil(width / waveWidth); // 根据给定的宽度计算波浪的数量
+    const step = width / numWaves;
+
+    let pathData = `M${x},${y + height}`;
+    for (let i = 0; i < numWaves; i++) {
+      if (i % 2 === 0) {
+        pathData += `q${step / 2},${waveHeight} ${step},0`;
+      } else {
+        pathData += `q${step / 2},-${waveHeight} ${step},0`;
+      }
+    }
+
+    return new Konva.Path({
+      data: pathData,
+      stroke: config.lineStroke,
+      strokeWidth: config.lineWidth,
     });
   }
 
@@ -118,6 +145,16 @@ class Stage implements Partial<IStage> {
       points: [x, y + height, x + width, y + height],
       stroke: config.lineStroke,
       strokeWidth: config.lineWidth,
+    });
+  }
+
+  private createDashLine(position: RectPosition, config: IMarkerConfig) {
+    const { x, y, width, height } = position;
+    return new Konva.Line({
+      points: [x, y + height, x + width, y + height],
+      stroke: config.lineStroke,
+      strokeWidth: config.lineWidth,
+      dash: [6, 3],
     });
   }
 }

@@ -1,6 +1,6 @@
 import { IFactory, IMarkItem, IMarkerConfig, MarkNode } from "../types/context";
 import {
-  getRangeStartEndText,
+  // getRangeStartEndText,
   getRectsByNode,
   getWithinTextNodes,
 } from "../util/selection";
@@ -33,7 +33,7 @@ class ContextFactory implements IFactory {
 
     if (!startPath || !endPath) return null;
 
-    const { startText, endText } = getRangeStartEndText(range);
+    // const { startText, endText } = getRangeStartEndText(range);
     const startNode: MarkNode = {
       path: startPath,
       offset: startOffset,

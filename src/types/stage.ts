@@ -10,7 +10,7 @@ export interface IStage {
    * @param id
    * @param config
    */
-  renderMarkItem(itemRects: DOMRect[], id: string, config: IMarkerConfig): void;
+  renderItem(itemRects: DOMRect[], id: string, config: IMarkerConfig): void;
   /**
    * 删除对应id的标记
    * @param id

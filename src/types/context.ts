@@ -27,6 +27,7 @@ export interface IMarkerConfig {
   lineStroke: string;
   // 线段默认的宽度
   lineWidth: number;
+  lineShape?: string;
   // canvas 渲染像素比
   pixelRatio?: number;
 }

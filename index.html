@@ -186,10 +186,6 @@
       const cur_operator = "user-B";
       const sources = JSON.parse(localStorage.getItem("markData")) || [];
 
-      const otherMarkerConfig = {
-        lineStroke: "red",
-      };
-
       const tipElement = document.createElement("div");
       tipElement.style.userSelect = "none";
       tipElement.style.borderRadius = "5px";
@@ -215,21 +211,8 @@
       if (sources && sources.length) {
         // const others = sources.filter((item) => item.operator !== cur_operator);
         // const mine = sources.filter((item) => item.operator === cur_operator);
-        const { others, mine } = sources.reduce(
-          (acc, item) => {
-            if (item.operator !== cur_operator) {
-              acc.others.push(item);
-            } else {
-              acc.mine.push(item);
-            }
-            return acc;
-          },
-          { others: [], mine: [] }
-        );
-        contextMarker.restore(mine);
-        contextMarker.updateMarkerConfig(otherMarkerConfig);
-        contextMarker.restore(others);
-        contextMarker.updateMarkerConfig();
+        sources.forEach(item => item.operator !== cur_operator && item.config && (item.config.lineShape = 'dash'))
+        contextMarker.restore(sources);
       }
 
       root.addEventListener("mouseup", (e) => {
@@ -257,11 +240,12 @@
         // .on('click', (id) => {})
         .on(ContextMarker.event.CREATE, (item) => {
           console.log("item", item);
-          const { endNode, startNode } = item;
+          const { endNode, startNode, config } = item;
           const sourceItem = {
-            id: Date.now(),
+            id: '' + Date.now(),
             endNode,
             startNode,
+            config,
             operator: cur_operator,
           };
           sources.push(sourceItem);

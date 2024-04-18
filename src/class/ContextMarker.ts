@@ -33,17 +33,18 @@ class ContextMarker
     this.root = root;
     this.marker = { ...defaultMarkerConfig, ...config };
     this.factory = new ContextFactory(this.root, this.marker);
-    this.stage = new Stage(this.root, this.marker);
+    this.stage = new Stage(this.root);
     this.observeResize();
   }
 
   render(item: IMarkItem) {
-    const rects = this.factory.createItemRects(item);
-    if (rects.length === 0) return false;
+    const itemRects = this.factory.createItemRects(item);
+    if (itemRects.length === 0) return false;
 
     this.add(item);
-    const { id } = item;
-    this.stage.renderMarkItem(rects, id, this.marker);
+    const { id, config } = item;
+    // this.stage.renderItem(itemRects, id, this.marker);
+    this.stage.renderItem(itemRects, id, {...defaultMarkerConfig, ...config});
     this.clearSelection();
     return true;
   }
@@ -120,7 +121,6 @@ class ContextMarker
     this.clearStage();
     // size变化时 更改画布大小 重新渲染item对应的rect
     console.log("items", this.items);
-
     this.items.forEach((item) => this.render(item));
   }
 
