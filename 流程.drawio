@@ -1,0 +1,97 @@
+<mxfile host="65bd71144e">
+    <diagram id="B8NiKvP7XYAvNsulkXv7" name="第 1 页">
+        <mxGraphModel dx="1037" dy="529" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="14" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="10">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" style="edgeStyle=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.558;entryY=-0.017;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="2" target="4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="注册marker，传入容器" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="200" y="80" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="3" target="21">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="监听抬起事件" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="50" y="260" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="4" target="18">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="监听点击事件" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="260" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="range" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="marker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="90" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="stage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="440" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="10" target="23">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="还原数据" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="205" y="180" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="renderRanges 根据lineRange还原" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="750" y="60" width="200" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="getRangeIdByPointer 获取鼠标位置对应id" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="725" y="90" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="&lt;span style=&quot;&quot;&gt;getRangeIdByPointer&amp;nbsp;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="370" y="410" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="&lt;span style=&quot;&quot;&gt;renderRanges&amp;nbsp;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="50" y="410" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="23" target="25">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="marker.renderRanges" style="whiteSpace=wrap;html=1;fillColor=none;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="205" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="marker.addRange&lt;br&gt;marker.renderRange" style="whiteSpace=wrap;html=1;fillColor=none;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="205" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="root 容器节点&lt;br&gt;config 配置&lt;br&gt;stage 画布&lt;br&gt;factory 工厂&lt;br&gt;ranges 划线数据" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="70" width="110" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="factory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="200" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="root 容器节点&lt;br&gt;config 配置" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="490" y="210" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="createRange" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="750" y="190" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="createRect" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="750" y="220" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="getSelectionPosition 获得选区开始结尾位置" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="725" y="120" width="260" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="createLine createGroup createRect" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="730" y="425" width="210" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="deleteRange" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="740" y="460" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="id&lt;br&gt;text&lt;br&gt;start&lt;br&gt;end&lt;br&gt;config*&lt;br&gt;type*&lt;br&gt;lineVisible&lt;br&gt;rectVisible&lt;br&gt;operators" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="510" y="280" width="80" height="140" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

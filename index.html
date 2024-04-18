@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+  </head>
+  <style>
+    #app {
+      position: relative;
+    }
+  </style>
+  <body>
+    <div id="app">
+      <ol>
+        <li>
+          <p>
+            <u
+              ><strong
+                ><em><s>dasda</s></em></strong
+              ></u
+            >
+          </p>
+        </li>
+        <li>
+          <p>
+            <u
+              ><strong
+                ><em><s>asdasdasdas</s></em></strong
+              ></u
+            >
+          </p>
+        </li>
+        <li>
+          <p>
+            <u
+              ><strong
+                ><em><s>ffdasdasdasdas</s></em></strong
+              ></u
+            >
+          </p>
+        </li>
+      </ol>
+      <p></p>
+      <p>
+        <a
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="me-link"
+          href="http://www.baidu.com"
+          istag="true"
+          value="啥答案所大所大所多"
+          title="Cmd/Ctrl+点击可跳转"
+          >这是一个链接</a
+        >这是一段【部分选择】文本这是
+      </p>
+      <img
+        class="me-image"
+        src="https://mind-file2.im30.net:443/mind-im-data-dev/f7177163c833dff4b38fc8d2872f1ec6/8hc7yv8eetiw6u72pxscmjzygr/1712039573786.jpg"
+        isresponse="false"
+        mind-data="[object Object]"
+        contenteditable="true"
+      />
+      <p>
+        这是一段【多行文本】文本这是一段【多行文本】文本
+        这是一段【多行文本】文本 这是一段【多行文本】文本
+        这是一段【多行文本】文本 这是一段【多行文本】文本
+        这是一段【多行文本】文本
+      </p>
+
+      <p>【换行文本】 选择</p>
+      <video
+        src="https://mind-file2.im30.net:443/mind-im-data-dev/f7177163c833dff4b38fc8d2872f1ec6/zkyahiybh4ywannqu9kbov2m8s/1712039598407.mp4"
+        contenteditable="false"
+        width="200"
+        height="113"
+        controls="true"
+        class="video-main"
+        controlslist="nodownload noremoteplayback noplaybackrate"
+        disablepictureinpicture="true"
+      ></video>
+      <p>啊实打实大阿斯顿阿斯顿</p>
+      <p>
+        <strong>测试</strong><em>视频</em><s>和图</s
+        ><u
+          >片“：<strong
+            ><em><s>萨达萨达萨达 </s></em></strong
+          ></u
+        ><strong
+          ><em><s> </s></em
+        ></strong>
+        <a
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="me-link"
+          href="http://www.baidu.com"
+          istag="true"
+          value="百度"
+          title="Cmd/Ctrl+点击可跳转"
+          >百度</a
+        >
+        <a
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="me-link"
+          href="http://www.baidu.com"
+          istag="false"
+          title="Cmd/Ctrl+点击可跳转"
+          >www.baidu.com</a
+        >
+      </p>
+      <ol>
+        <li>
+          <p>有序列表1</p>
+          <ol>
+            <li>
+              <p>
+                有序列表1-1
+                <span
+                  data-type="mention"
+                  class="me-mention"
+                  data-id="_user_1asdfjq39r100weuf2_9afce3gn7brg8rra"
+                  data-label="逐货师"
+                  >@逐货师</span
+                >
+              </p>
+            </li>
+          </ol>
+        </li>
+        <li>
+          <p>有序列表2</p>
+          <ol>
+            <li>
+              <p>有序列表2-1</p>
+              <ol>
+                <li>
+                  <p>游学列表2-1-1</p>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+      </ol>
+      <ul>
+        <li>
+          <p>无序列表1</p>
+          <ul>
+            <li>
+              <p>无序列表1-1</p>
+              <ul>
+                <li>
+                  <p>序列表1-1-1</p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p>东方闪电费大叔飞的</p>
+      <img
+        class="me-image"
+        src="https://mind-file2.im30.net:443/mind-im-data-dev/f7177163c833dff4b38fc8d2872f1ec6/j6b5hbfpq3dpslb6pqwjog9f74/1712473863824.png"
+        isresponse="false"
+        mind-data="[object Object]"
+        contenteditable="true"
+      />
+      <p>范德萨范德萨发都是</p>
+      <video
+        src="https://mind-file2.im30.net:443/mind-im-data-dev/f7177163c833dff4b38fc8d2872f1ec6/asza98rphgt9vfxbtbfhqtplk8/1712473870562.mp4"
+        contenteditable="false"
+        width="200"
+        height="113"
+        class="video-main"
+        controls
+        controlslist="nodownload noplay  noremoteplayback noplaybackrate"
+        disablepictureinpicture="true"
+      ></video>
+      <p></p>
+    </div>
+    <script type="module">
+      import { ContextMarker } from "./src/index";
+      import axios from "axios";
+      const root = document.getElementById("app");
+      let markItem = null;
+      const cur_operator = "user-B";
+      const sources = JSON.parse(localStorage.getItem("markData")) || [];
+
+      const otherMarkerConfig = {
+        lineStroke: "red",
+      };
+
+      const tipElement = document.createElement("div");
+      tipElement.style.userSelect = "none";
+      tipElement.style.borderRadius = "5px";
+      tipElement.style.background = "transparent";
+      tipElement.style.color = "#fff";
+      tipElement.style.paddingBlock = "3px 6px";
+      tipElement.style.position = "fixed";
+      tipElement.style.width = "56px";
+      tipElement.style.visibility = "hidden";
+      tipElement.style.textAlign = "center";
+      tipElement.innerHTML = "<span>划线</span>";
+      tipElement.onclick = () => {
+        contextMarker.render(markItem);
+        hiddenTip();
+      };
+      root.appendChild(tipElement);
+
+      const hiddenTip = () => {
+        tipElement.style.visibility = "hidden";
+        tipElement.style.background = "transparent";
+      };
+      const contextMarker = new ContextMarker(root);
+      if (sources && sources.length) {
+        // const others = sources.filter((item) => item.operator !== cur_operator);
+        // const mine = sources.filter((item) => item.operator === cur_operator);
+        const { others, mine } = sources.reduce(
+          (acc, item) => {
+            if (item.operator !== cur_operator) {
+              acc.others.push(item);
+            } else {
+              acc.mine.push(item);
+            }
+            return acc;
+          },
+          { others: [], mine: [] }
+        );
+        contextMarker.restore(mine);
+        contextMarker.updateMarkerConfig(otherMarkerConfig);
+        contextMarker.restore(others);
+        contextMarker.updateMarkerConfig();
+      }
+
+      root.addEventListener("mouseup", (e) => {
+        markItem = contextMarker.getSelectionItem();
+        const rects = contextMarker.getSelectionRect();
+        if (!rects || !rects.length) {
+          hiddenTip();
+          return;
+        }
+        const [startRect, endRect] = rects;
+        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+        tipElement.style.left =
+          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+        tipElement.style.visibility = "visible";
+        tipElement.style.background = "#000000c4";
+      });
+      // root.addEventListener("click", (e) => {
+      //   hiddenTip();
+      // })
+      // TODO:移动端app手势兼容
+      document.addEventListener("selectionchange", (e) => {});
+
+      contextMarker
+        // .on('mouseup', (item, position) => {})
+        // .on('click', (id) => {})
+        .on(ContextMarker.event.CREATE, (item) => {
+          console.log("item", item);
+          const { endNode, startNode } = item;
+          const sourceItem = {
+            id: Date.now(),
+            endNode,
+            startNode,
+            operator: cur_operator,
+          };
+          sources.push(sourceItem);
+          localStorage.setItem("markData", JSON.stringify(sources));
+        });
+    </script>
+  </body>
+</html>
