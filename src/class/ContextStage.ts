@@ -92,6 +92,13 @@ class Stage implements IStage {
       })
       .map((i) => i.group.id());
   }
+  
+  getItemPositionById(id: string) {
+    const group = this.groups.find(i => i.id === id)
+    return group ? group.positions : null
+  }
+
+
   private createContainer() {
     const el = document.createElement("div");
     el.style.position = "absolute";

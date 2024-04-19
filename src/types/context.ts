@@ -65,6 +65,7 @@ export interface IMarkItem {
   rectVisible?: boolean;
   create_at?: number;
   operator?: string;
+  [key: string]: any;
 }
 
 export interface IContextMarker {
@@ -112,6 +113,10 @@ export interface IContextMarker {
    * 根据鼠标位置获取相应的所有标记
    */
   getItemsByPointer(x: number, y: number): Partial<IMarkItem>[];
+  /**
+   * 获取对应item的rect位置
+   */
+  getItemPosition(item: IMarkItem): RectPosition[] | null;
   /**
    * 清空画布
    */

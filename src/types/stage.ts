@@ -34,7 +34,7 @@ export interface IStage {
    * 获取对应id的标记位置
    * @param id
    */
-  getItemPositionById(id: string): RectPosition;
+  getItemPositionById(id: string): RectPosition[] | null;
   /**
    * 更新画布大小
    */

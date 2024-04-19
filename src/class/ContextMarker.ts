@@ -81,26 +81,37 @@ class ContextMarker
     selection = selection || window.getSelection();
     if (!selection || !isValidSelection(selection)) return null;
     const range = selection.getRangeAt(0);
-    const { startContainer, endContainer } = range;
+    // const { startContainer, endContainer } = range;
+    // if (
+    //   !isValidTextNode(this.root, startContainer) ||
+    //   !isValidTextNode(this.root, endContainer)
+    // )
+    //   return null;
 
-    if (
-      !isValidTextNode(this.root, startContainer) ||
-      !isValidTextNode(this.root, endContainer)
-    )
-      return null;
+    
     const DOMRects = Array.from(range.getClientRects()).map((item) => {
       const { left, top, width, height, x, y } = item;
       return {
         ...item,
         left,
-        top: top + this.root.scrollTop,
+        top,
         width,
         height,
         x,
-        y,
+        y: y - this.root.offsetTop + document.documentElement.scrollTop + this.root.scrollTop,
       };
     });
     return [DOMRects[0], DOMRects[DOMRects.length - 1]];
+  }
+
+  getItemPosition(item: IMarkItem) {
+    const rects = this.stage.getItemPositionById(item.id);
+    if (!rects?.length) return null;
+    return rects.map(rectItem => {
+      rectItem.y += this.root.scrollTop;
+      rectItem.x += this.root.scrollLeft;
+      return rectItem;
+    });
   }
 
   getItemsByPointer(x: number, y: number) {
@@ -112,7 +123,6 @@ class ContextMarker
     return filterItems;
   }
 
-  // getRangePositionsById;
   updateMarkerConfig(config?: IMarkerConfig) {
     this.marker = { ...defaultMarkerConfig, ...config };
     this.factory = new ContextFactory(this.root, this.marker);
@@ -131,33 +141,38 @@ class ContextMarker
 
   private observerPointerEnd() {
     this.root.addEventListener(this.event.PointerEnd, () => {
-      const markItem = this.getSelectionItem();
-      const markRects = this.getSelectionRect();
-      if (!markItem) return;
-      const {
-        startNode: { path: startPath },
-        endNode: { path: endPath },
-      } = markItem;
-      const samePathItems: IMarkItem[] = [];
-      this.items.forEach((targetItem) => {
-        if (
-          targetItem.length === markItem.length &&
-          isSamePath(startPath, targetItem.startNode.path) &&
-          isSamePath(endPath, targetItem.endNode.path)
-        ) {
-          samePathItems.push(targetItem);
-        }
-      });
-      this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
+      setTimeout(() => {
+        const markItem = this.getSelectionItem();
+        if (!markItem) return this.emit(this.event.PointerEnd, null);
+  
+        const markRects = this.getSelectionRect();
+        const {
+          startNode: { path: startPath },
+          endNode: { path: endPath },
+        } = markItem;
+        const samePathItems: IMarkItem[] = [];
+        this.items.forEach((targetItem) => {
+          if (
+            targetItem.length === markItem.length &&
+            isSamePath(startPath, targetItem.startNode.path) &&
+            isSamePath(endPath, targetItem.endNode.path)
+          ) {
+            samePathItems.push(targetItem);
+          }
+        });
+        this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
+      })
     });
   }
   private observeClick() {
     this.root.addEventListener("click", (e) => {
-      this.emit(
-        EventType.CLICK,
-        this.getItemsByPointer(e.clientX, e.clientY),
-        e
-      );
+      setTimeout(() => {
+        this.emit(
+          EventType.CLICK,
+          this.getItemsByPointer(e.clientX, e.clientY),
+          e
+        );
+      })
     });
   }
 

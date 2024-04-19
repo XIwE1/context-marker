@@ -192,10 +192,11 @@
       tipElement.style.background = "transparent";
       tipElement.style.color = "#fff";
       tipElement.style.paddingBlock = "3px 6px";
-      tipElement.style.position = "fixed";
+      tipElement.style.position = "absolute";
       tipElement.style.width = "56px";
       tipElement.style.visibility = "hidden";
       tipElement.style.textAlign = "center";
+      tipElement.style.zIndex = 2;
       tipElement.innerHTML = "<span>划线</span>";
       tipElement.onclick = () => {
         contextMarker.render(markItem);
@@ -203,15 +204,26 @@
       };
       root.appendChild(tipElement);
 
+      const showTip = (startRect, operators) => {
+        // tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+        // tipElement.style.left =
+        //   startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+        // tipElement.style.visibility = "visible";
+        // tipElement.style.background = "#000000c4";
+        // if (operators && operators.length) {
+        // } else {
+        //   tipElement.innerHTML = "<span>划线</span>";
+        // }
+        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu");
+      };
       const hiddenTip = () => {
-        markItem = null;
-        tipElement.style.visibility = "hidden";
-        tipElement.style.background = "transparent";
+        // markItem = null;
+        // tipElement.style.visibility = "hidden";
+        // tipElement.style.background = "transparent";
+        window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
       };
       const contextMarker = new ContextMarker(root);
       if (sources && sources.length) {
-        // const others = sources.filter((item) => item.operator !== cur_operator);
-        // const mine = sources.filter((item) => item.operator === cur_operator);
         sources.forEach(
           (item) =>
             item.operator !== cur_operator &&
@@ -220,35 +232,52 @@
         );
         contextMarker.restore(sources);
       }
-
+      const doMarkUnderline = () => {
+        alert('用户点击了划线 当前selection' + JSON.stringify(contextMarker.getSelectionItem()))
+      }
       // TODO:移动端app手势兼容
-      document.addEventListener("selectionchange", (e) => {});
+      root.addEventListener("selectionchange", (e) => {});
+      const matchItems = (items) => {
+        if (items.length === 1) return items[0];
+        // 筛选最短的内容
+        const minLength = Math.min(...items.map((item) => item.length));
+        const minLengthElements = items.filter(
+          (item) => item.length === minLength
+        );
+        if (minLengthElements.length === 1) return minLengthElements[0];
+        // 筛选创建时间最早的内容
+        const myElements = minLengthElements.find(
+          (item) => item.id === cur_operator
+        );
+        // 优先选id是自己的
+        if (myElements) return myElements;
+        const minCreateElement = minLengthElements.reduce((prev, current) =>
+          prev.create_at > current.create_at ? current : prev
+        );
+        return minCreateElement;
+      };
 
       contextMarker
-        .on(ContextMarker.event.CLICK, (items) => {
+        .on(ContextMarker.event.CLICK, (items, e) => {
           console.log("ContextMarker.event.CLICK", items);
-          // hiddenTip();
+          if (!markItem) {
+            if (!items || !items.length) return hiddenTip();
+            const matchItem = matchItems(items);
+            const rects = contextMarker.getItemPosition(matchItem);
+            if (!rects || !rects.length) return hiddenTip();
+            showTip(rects[0]);
+          }
         })
         .on(contextMarker.event.PointerEnd, (item, items, rects) => {
-          console.log("PointerEnd-items", items);
+          console.log("PointerEnd-item", item);
 
+          if (!item) return hiddenTip();
           markItem = item;
-          if (!rects || !rects.length) return hiddenTip();
           const [startRect, endRect] = rects;
-
-          tipElement.style.top =
-            startRect.y - tipElement.clientHeight - 2 + "px";
-          tipElement.style.left =
-            startRect.x +
-            startRect.width / 2 -
-            tipElement.clientWidth / 2 +
-            "px";
-          tipElement.style.visibility = "visible";
-          tipElement.style.background = "#000000c4";
+          if (item && item.length) showTip(startRect);
         })
 
         .on(ContextMarker.event.CREATE, (item) => {
-          console.log("item", item);
           const { rectVisible, lineVisible, ...otherParam } = item;
           const sourceItem = {
             id: "" + Date.now(),

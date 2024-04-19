@@ -25,8 +25,8 @@ class ContextFactory implements IFactory {
       endOffset,
     } = range;
 
-    if (!isValidTextNode(this.root, start) || !isValidTextNode(this.root, end))
-      return null;
+    // if (!isValidTextNode(this.root, start) || !isValidTextNode(this.root, end))
+    //   return null;
 
     const startPath = this.getPath(start);
     const endPath = start === end ? startPath : this.getPath(end);
