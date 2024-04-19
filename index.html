@@ -204,17 +204,21 @@
       };
       root.appendChild(tipElement);
 
-      const showTip = (startRect, operators) => {
+      const showTip = (item, startRect, operators) => {
+        console.log("showTip", item, startRect, operators);
         // tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
         // tipElement.style.left =
         //   startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
         // tipElement.style.visibility = "visible";
         // tipElement.style.background = "#000000c4";
         // if (operators && operators.length) {
+        //   const count = operators.length
+        //   if (operators.includes(cur_operator)) tipElement.innerHTML = "<span>已划线</span>" + count;
+        //   else tipElement.innerHTML = "<span>划线</span>" + count;
         // } else {
         //   tipElement.innerHTML = "<span>划线</span>";
         // }
-        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu");
+        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, operators);
       };
       const hiddenTip = () => {
         // markItem = null;
@@ -265,7 +269,7 @@
             const matchItem = matchItems(items);
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
-            showTip(rects[0]);
+            showTip(matchItem, rects[0], items.map(item => item.operator));
           }
         })
         .on(contextMarker.event.PointerEnd, (item, items, rects) => {
@@ -274,7 +278,7 @@
           if (!item) return hiddenTip();
           markItem = item;
           const [startRect, endRect] = rects;
-          if (item && item.length) showTip(startRect);
+          if (item && item.length) showTip(item, startRect, items.map(item => item.operator));
         })
 
         .on(ContextMarker.event.CREATE, (item) => {
