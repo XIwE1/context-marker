@@ -68,6 +68,15 @@ class ContextMarker
       this.render(sourceItem);
     });
   }
+
+  highlight(isHightlight: boolean, id: string) {
+    if (!id) return false;
+    const targetItem = [...this.items].find((item) => item.id === id);
+    if (!targetItem) return false;
+    targetItem.rectVisible = isHightlight;
+    return true;
+  }
+
   // delete
   // search
   getSelectionItem(selection?: Selection | null) {
@@ -88,7 +97,6 @@ class ContextMarker
     // )
     //   return null;
 
-    
     const DOMRects = Array.from(range.getClientRects()).map((item) => {
       const { left, top, width, height, x, y } = item;
       return {
@@ -98,7 +106,11 @@ class ContextMarker
         width,
         height,
         x,
-        y: y - this.root.offsetTop + document.documentElement.scrollTop + this.root.scrollTop,
+        y:
+          y -
+          this.root.offsetTop +
+          document.documentElement.scrollTop +
+          this.root.scrollTop,
       };
     });
     return [DOMRects[0], DOMRects[DOMRects.length - 1]];
@@ -107,7 +119,7 @@ class ContextMarker
   getItemPosition(item: IMarkItem) {
     const rects = this.stage.getItemPositionById(item.id);
     if (!rects?.length) return null;
-    return rects.map(rectItem => {
+    return rects.map((rectItem) => {
       rectItem.y += this.root.scrollTop;
       rectItem.x += this.root.scrollLeft;
       return rectItem;
@@ -144,7 +156,7 @@ class ContextMarker
       setTimeout(() => {
         const markItem = this.getSelectionItem();
         if (!markItem) return this.emit(this.event.PointerEnd, null);
-  
+
         const markRects = this.getSelectionRect();
         const {
           startNode: { path: startPath },
@@ -161,7 +173,7 @@ class ContextMarker
           }
         });
         this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
-      })
+      });
     });
   }
   private observeClick() {
@@ -172,7 +184,7 @@ class ContextMarker
           this.getItemsByPointer(e.clientX, e.clientY),
           e
         );
-      })
+      });
     });
   }
 

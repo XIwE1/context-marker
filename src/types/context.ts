@@ -110,6 +110,10 @@ export interface IContextMarker {
    */
   restore(items: IMarkItem[]): void;
   /**
+   * 高亮/取消高亮 指定id的区域
+   */
+  highlight(isHightlight: boolean, id: string): boolean;
+  /**
    * 根据鼠标位置获取相应的所有标记
    */
   getItemsByPointer(x: number, y: number): Partial<IMarkItem>[];
