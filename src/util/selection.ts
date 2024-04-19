@@ -39,22 +39,6 @@ export function getRectsByNode(
   return Array.from(range.getClientRects());
 }
 
-// /**
-//  * 获取 节点对应位置的 DOMRect
-//  * @param node
-//  * @param offset
-//  * @returns
-//  */
-// export function getCharRect(node: Text, offset: number) {
-//   const range = document.createRange();
-//   range.setStart(node, offset);
-//   range.setEnd(
-//     node,
-//     offset + 1 > node.textContent!.length ? offset : offset + 1
-//   );
-//   return range.getBoundingClientRect();
-// }
-
 /**
  * 获得range之间的所有文本节点
  * @param root
@@ -80,4 +64,14 @@ export function getWithinTextNodes(root: HTMLElement, start: Node, end: Node) {
       textNodes.push(curNode);
   }
   return textNodes;
+}
+
+export function isSamePath(source: number[], target: number[]) {
+  if (source.length !== target.length) return false;
+  for (let i = 0; i < source.length; i++) {
+    if (source[i] !== target[i]) {
+      return false;
+    }
+  }
+  return true;
 }

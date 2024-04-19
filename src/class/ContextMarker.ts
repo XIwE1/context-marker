@@ -3,10 +3,11 @@ import ContextFactory from "./ContextFactory";
 import { defaultMarkerConfig } from "../config";
 import { isValidSelection, isValidTextNode } from "../util/valid";
 import Stage from "./ContextStage";
-import { debounce } from "../util";
+import { debounce, getInteraction } from "../util";
 import EventEmitter from "./event.emitter";
 import { EventHandlerMap } from "../types/types";
 import { EventType } from "../types/enum";
+import { isSamePath } from "../util/selection";
 
 const AOLLOWED_TYPES = ["absolute", "fixed", "relative"];
 
@@ -18,8 +19,9 @@ class ContextMarker
   private root: HTMLElement;
   private factory: ContextFactory;
   private stage: Stage;
-
   private items: Set<IMarkItem> = new Set();
+  private readonly event = getInteraction();
+
   marker: IMarkerConfig;
   constructor(root: HTMLElement, config?: IMarkerConfig) {
     super();
@@ -36,6 +38,7 @@ class ContextMarker
     this.stage = new Stage(this.root);
     this.observeResize();
     this.observeClick();
+    this.observerPointerEnd();
   }
 
   render(item: IMarkItem) {
@@ -126,6 +129,28 @@ class ContextMarker
     observer.observe(this.root);
   }
 
+  private observerPointerEnd() {
+    this.root.addEventListener(this.event.PointerEnd, () => {
+      const markItem = this.getSelectionItem();
+      const markRects = this.getSelectionRect();
+      if (!markItem) return;
+      const {
+        startNode: { path: startPath },
+        endNode: { path: endPath },
+      } = markItem;
+      const samePathItems: IMarkItem[] = [];
+      this.items.forEach((targetItem) => {
+        if (
+          targetItem.length === markItem.length &&
+          isSamePath(startPath, targetItem.startNode.path) &&
+          isSamePath(endPath, targetItem.endNode.path)
+        ) {
+          samePathItems.push(targetItem);
+        }
+      });
+      this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
+    });
+  }
   private observeClick() {
     this.root.addEventListener("click", (e) => {
       this.emit(

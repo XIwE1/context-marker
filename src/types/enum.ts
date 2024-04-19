@@ -8,12 +8,6 @@ export enum EventType {
 }
 
 export enum LineType {
-    CREATE = "selection:create",
-    REMOVE = "selection:remove",
-    MODIFY = "selection:modify",
-    HOVER = "selection:hover",
-    HOVER_OUT = "selection:hover-out",
-    CLICK = "selection:click",
   }
 
 export enum UserEvent {

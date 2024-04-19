@@ -204,6 +204,7 @@
       root.appendChild(tipElement);
 
       const hiddenTip = () => {
+        markItem = null;
         tipElement.style.visibility = "hidden";
         tipElement.style.background = "transparent";
       };
@@ -220,39 +221,40 @@
         contextMarker.restore(sources);
       }
 
-      root.addEventListener("mouseup", (e) => {
-        markItem = contextMarker.getSelectionItem();
-        const rects = contextMarker.getSelectionRect();
-        if (!rects || !rects.length) {
-          hiddenTip();
-          return;
-        }
-        const [startRect, endRect] = rects;
-        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
-        tipElement.style.left =
-          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
-        tipElement.style.visibility = "visible";
-        tipElement.style.background = "#000000c4";
-      });
-      // root.addEventListener("click", (e) => {
-      //   hiddenTip();
-      // })
       // TODO:移动端app手势兼容
       document.addEventListener("selectionchange", (e) => {});
 
       contextMarker
-        // .on('mouseup', (item, position) => {})
-        .on(ContextMarker.event.CLICK, (items) => {})
+        .on(ContextMarker.event.CLICK, (items) => {
+          console.log("ContextMarker.event.CLICK", items);
+          // hiddenTip();
+        })
+        .on(contextMarker.event.PointerEnd, (item, items, rects) => {
+          console.log("PointerEnd-items", items);
+
+          markItem = item;
+          if (!rects || !rects.length) return hiddenTip();
+          const [startRect, endRect] = rects;
+
+          tipElement.style.top =
+            startRect.y - tipElement.clientHeight - 2 + "px";
+          tipElement.style.left =
+            startRect.x +
+            startRect.width / 2 -
+            tipElement.clientWidth / 2 +
+            "px";
+          tipElement.style.visibility = "visible";
+          tipElement.style.background = "#000000c4";
+        })
+
         .on(ContextMarker.event.CREATE, (item) => {
           console.log("item", item);
-          const { endNode, startNode, config } = item;
+          const { rectVisible, lineVisible, ...otherParam } = item;
           const sourceItem = {
             id: "" + Date.now(),
-            endNode,
-            startNode,
-            config,
             operator: cur_operator,
             create_at: Date.now(),
+            ...otherParam,
           };
           sources.push(sourceItem);
           localStorage.setItem("markData", JSON.stringify(sources));
