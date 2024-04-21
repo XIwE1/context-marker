@@ -269,6 +269,7 @@
             const matchItem = matchItems(items);
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
+            contextMarker.highlight(true, matchItem.id);
             showTip(
               matchItem,
               rects[0],

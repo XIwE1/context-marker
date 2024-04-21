@@ -46,9 +46,19 @@ class ContextMarker
     if (itemRects.length === 0) return false;
 
     this.add(item);
-    const { id, config } = item;
+    const { id, config, lineVisible, rectVisible } = item;
+
     // this.stage.renderItem(itemRects, id, this.marker);
-    this.stage.renderItem(itemRects, id, { ...defaultMarkerConfig, ...config });
+    this.stage.renderItem(
+      itemRects,
+      id,
+      {
+        ...defaultMarkerConfig,
+        ...config,
+      },
+      lineVisible ?? true,
+      rectVisible ?? false
+    );
     this.clearSelection();
     return true;
   }
@@ -74,6 +84,13 @@ class ContextMarker
     const targetItem = [...this.items].find((item) => item.id === id);
     if (!targetItem) return false;
     targetItem.rectVisible = isHightlight;
+    targetItem.lineVisible = !isHightlight;
+    this.stage.deleteItem(id);
+    this.render(targetItem);
+
+    // const stageItem = this.stage.getStageItemById(id);
+    // stageItem!.group.children[0].visible(true);
+    // stageItem!.group.children[1].visible(false);
     return true;
   }
 
@@ -117,9 +134,9 @@ class ContextMarker
   }
 
   getItemPosition(item: IMarkItem) {
-    const rects = this.stage.getItemPositionById(item.id);
-    if (!rects?.length) return null;
-    return rects.map((rectItem) => {
+    const stageItem = this.stage.getStageItemById(item.id);
+    if (!stageItem?.positions?.length) return null;
+    return stageItem.positions.map((rectItem) => {
       rectItem.y += this.root.scrollTop;
       rectItem.x += this.root.scrollLeft;
       return rectItem;

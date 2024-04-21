@@ -1,3 +1,4 @@
+import Konva from "konva";
 import { IMarkerConfig, RectPosition } from "./context";
 
 /**
@@ -31,10 +32,10 @@ export interface IStage {
    */
   getAllGroupIdByPointer(x: number, y: number): string[];
   /**
-   * 获取对应id的标记位置
+   * 获取对应id在画布中的元素
    * @param id
    */
-  getItemPositionById(id: string): RectPosition[] | null;
+  getStageItemById(id: string): Konva.Group | undefined;
   /**
    * 更新画布大小
    */

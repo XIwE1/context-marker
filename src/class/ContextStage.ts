@@ -31,8 +31,18 @@ class Stage implements IStage {
     this.stage.add(this.layer);
   }
 
-  renderItem(itemRects: DOMRect[], id: string, config: IMarkerConfig) {
-    const { group, rectGroup, lineGroup } = this.createGroup(id, config);
+  renderItem(
+    itemRects: DOMRect[],
+    id: string,
+    config: IMarkerConfig,
+    lineVisible: boolean,
+    rectVisible: boolean
+  ) {
+    const { group, rectGroup, lineGroup } = this.createGroup(
+      id,
+      lineVisible,
+      rectVisible
+    );
     const { top, left } = this.getRootRectPosition();
     const positions: RectPosition[] = [];
     itemRects.forEach((rectItem) => {
@@ -92,12 +102,10 @@ class Stage implements IStage {
       })
       .map((i) => i.group.id());
   }
-  
-  getItemPositionById(id: string) {
-    const group = this.groups.find(i => i.id === id)
-    return group ? group.positions : null
-  }
 
+  getStageItemById(id: string) {
+    return this.groups.find((i) => i.id === id);
+  }
 
   private createContainer() {
     const el = document.createElement("div");
@@ -115,19 +123,19 @@ class Stage implements IStage {
       height: this.root.scrollHeight,
     });
   }
-  private createGroup(id: string, config: IMarkerConfig) {
+  private createGroup(id: string, lineVisible: boolean, rectVisible: boolean) {
     const group = new Konva.Group({ id, x: 0, y: 0 });
     const rectGroup = new Konva.Group({
       id: KONVA_PREFIX.RECT_PREFIX + id,
       x: 0,
       y: 0,
-      visible: false,
+      visible: rectVisible,
     });
     const lineGroup = new Konva.Group({
       id: KONVA_PREFIX.LINE_PREFIX + id,
       x: 0,
       y: 0,
-      visible: true,
+      visible: lineVisible,
     });
     group.add(rectGroup);
     group.add(lineGroup);
