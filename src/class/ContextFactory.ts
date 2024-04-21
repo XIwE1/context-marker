@@ -51,7 +51,7 @@ class ContextFactory implements IFactory {
       startNode,
       endNode,
       lineVisible: true,
-      rectVisible: true,
+      rectVisible: false,
       config: this.config,
     };
   }
