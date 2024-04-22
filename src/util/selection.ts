@@ -72,10 +72,11 @@ export function isSameNode(sourceNode: MarkNode, targetNode: MarkNode) {
   if (sourceNode.offset !== targetNode.offset) return false;
   // 比较path是否相同
   if (sourceNode.path.length !== targetNode.path.length) return false;
-  for (let i = 0; i < sourceNode.path.length; i++) {
-    if (sourceNode.path[i] !== targetNode.path[i]) {
-      return false;
-    }
-  }
-  return true;
+  return JSON.stringify(sourceNode.path) === JSON.stringify(targetNode.path);
+  // for (let i = 0; i < sourceNode.path.length; i++) {
+  //   if (sourceNode.path[i] !== targetNode.path[i]) {
+  //     return false;
+  //   }
+  // }
+  // return true;
 }
