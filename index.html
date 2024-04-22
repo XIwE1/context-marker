@@ -281,18 +281,18 @@
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
             contextMarker.highlight(true, matchItem.id);
-            markItem = matchItem;
-            showTip(
-              matchItem,
-              rects[0],
-              items
-                .filter(
-                  (item) =>
-                    isSameNode(matchItem.startNode, item.startNode) &&
-                    isSameNode(matchItem.endNode, item.endNode)
-                )
-                .map((item) => item.operator)
+            const filterItems = items.filter(
+              (item) =>
+                isSameNode(matchItem.startNode, item.startNode) &&
+                isSameNode(matchItem.endNode, item.endNode)
             );
+            const operators = filterItems.map((item) => item.operator);
+            if (operators.includes(cur_operator)) {
+              markItem = matchItem;
+            } else {
+              markItem = { ...matchItem, id: undefined, create_at: undefined };
+            }
+            showTip(matchItem, rects[0], operators);
           }
         })
         .on(contextMarker.event.PointerEnd, (item, items, rects) => {
