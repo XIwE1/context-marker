@@ -238,6 +238,15 @@
         });
         contextMarker.restore(sources);
       }
+      function isSameNode(sourceNode, targetNode) {
+        // 比较offset是否相同
+        if (sourceNode.offset !== targetNode.offset) return false;
+        // 比较path是否相同
+        if (sourceNode.path.length !== targetNode.path.length) return false;
+        return (
+          JSON.stringify(sourceNode.path) === JSON.stringify(targetNode.path)
+        );
+      }
 
       // TODO:移动端app手势兼容
       root.addEventListener("selectionchange", (e) => {});
@@ -249,12 +258,12 @@
           (item) => item.length === minLength
         );
         if (minLengthElements.length === 1) return minLengthElements[0];
-        // 筛选创建时间最早的内容
+        // 优先选id是自己的
         const myElements = minLengthElements.find(
           (item) => item.id === cur_operator
         );
-        // 优先选id是自己的
         if (myElements) return myElements;
+        // 筛选创建时间最早的内容
         const minCreateElement = minLengthElements.reduce((prev, current) =>
           prev.create_at > current.create_at ? current : prev
         );
@@ -266,7 +275,9 @@
           console.log("ContextMarker.event.CLICK", items);
           if (!markItem) {
             if (!items || !items.length) return hiddenTip();
+            // 找到匹配的item
             const matchItem = matchItems(items);
+            // 获取item对应的rect
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
             contextMarker.highlight(true, matchItem.id);
@@ -274,7 +285,13 @@
             showTip(
               matchItem,
               rects[0],
-              items.map((item) => item.operator)
+              items
+                .filter(
+                  (item) =>
+                    isSameNode(matchItem.startNode, item.startNode) &&
+                    isSameNode(matchItem.endNode, item.endNode)
+                )
+                .map((item) => item.operator)
             );
           }
         })

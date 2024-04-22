@@ -73,10 +73,4 @@ export function isSameNode(sourceNode: MarkNode, targetNode: MarkNode) {
   // 比较path是否相同
   if (sourceNode.path.length !== targetNode.path.length) return false;
   return JSON.stringify(sourceNode.path) === JSON.stringify(targetNode.path);
-  // for (let i = 0; i < sourceNode.path.length; i++) {
-  //   if (sourceNode.path[i] !== targetNode.path[i]) {
-  //     return false;
-  //   }
-  // }
-  // return true;
 }
