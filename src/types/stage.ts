@@ -1,5 +1,6 @@
 import Konva from "konva";
 import { IMarkerConfig, RectPosition } from "./context";
+import { StageGroup } from "../class/ContextStage";
 
 /**
  * 画布抽象类
@@ -11,7 +12,7 @@ export interface IStage {
    * @param id
    * @param config
    */
-  renderItem(itemRects: DOMRect[], id: string, config: IMarkerConfig): void;
+  renderItem(itemRects: DOMRect[], id: string, config: IMarkerConfig, lineVisible: boolean, rectVisible: boolean): void;
   /**
    * 删除对应id的标记
    * @param id
@@ -35,7 +36,7 @@ export interface IStage {
    * 获取对应id在画布中的元素
    * @param id
    */
-  getStageItemById(id: string): Konva.Group | undefined;
+  getStageItemById(id: string): StageGroup | undefined;
   /**
    * 更新画布大小
    */

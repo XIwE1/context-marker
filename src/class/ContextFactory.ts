@@ -81,6 +81,7 @@ class ContextFactory implements IFactory {
     return rects.map((rectItem) => {
       rectItem.y += this.root.scrollTop;
       rectItem.x += this.root.scrollLeft;
+      rectItem.height += 1;
       return rectItem;
     });
   }

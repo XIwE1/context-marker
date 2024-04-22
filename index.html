@@ -205,27 +205,29 @@
       root.appendChild(tipElement);
 
       const showTip = (item, startRect, operators) => {
-        console.log("showTip", item, startRect, operators);
-        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
-        tipElement.style.left =
-          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
-        tipElement.style.visibility = "visible";
-        tipElement.style.background = "#000000c4";
-        if (operators && operators.length) {
-          const count = operators.length;
-          if (operators.includes(cur_operator))
-            tipElement.innerHTML = "<span>已划线</span>" + count;
-          else tipElement.innerHTML = "<span>划线</span>" + count;
-        } else {
-          tipElement.innerHTML = "<span>划线</span>";
-        }
-        // window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, operators);
+        // console.log("showTip", item, startRect, operators);
+        const ids = [...new Set(operators)]
+        // tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+        // tipElement.style.left =
+        //   startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+        // tipElement.style.visibility = "visible";
+        // tipElement.style.background = "#000000c4";
+        // if (ids && ids.length) {
+        //   const count = ids.length;
+        //   if (ids.includes(cur_operator))
+        //     tipElement.innerHTML = "<span>已划线</span>" + count;
+        //   else tipElement.innerHTML = "<span>划线</span>" + count;
+        // } else {
+        //   tipElement.innerHTML = "<span>划线</span>";
+        // }
+        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
       };
       const hiddenTip = () => {
-        markItem = null;
-        tipElement.style.visibility = "hidden";
-        tipElement.style.background = "transparent";
-        // window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
+        // markItem && contextMarker.highlight(false, markItem.id);
+        // markItem = null;
+        // tipElement.style.visibility = "hidden";
+        // tipElement.style.background = "transparent";
+        window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
       };
 
       const contextMarker = new ContextMarker(root);
@@ -270,6 +272,7 @@
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
             contextMarker.highlight(true, matchItem.id);
+            markItem = matchItem;
             showTip(
               matchItem,
               rects[0],
@@ -279,10 +282,12 @@
         })
         .on(contextMarker.event.PointerEnd, (item, items, rects) => {
           console.log("PointerEnd-item", item);
-
-          if (!item) return hiddenTip();
+          console.log("PointerEnd-items", items);
+          hiddenTip();
+          if (!item) return;
           markItem = item;
           const [startRect, endRect] = rects;
+          // 如果items里有跟item id一样的元素，选中它，否则
           if (item && item.length)
             showTip(
               item,
