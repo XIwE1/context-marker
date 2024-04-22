@@ -205,29 +205,29 @@
       root.appendChild(tipElement);
 
       const showTip = (item, startRect, operators) => {
-        // console.log("showTip", item, startRect, operators);
+        console.log("showTip", item, startRect, operators);
         const ids = [...new Set(operators)]
-        // tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
-        // tipElement.style.left =
-        //   startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
-        // tipElement.style.visibility = "visible";
-        // tipElement.style.background = "#000000c4";
-        // if (ids && ids.length) {
-        //   const count = ids.length;
-        //   if (ids.includes(cur_operator))
-        //     tipElement.innerHTML = "<span>已划线</span>" + count;
-        //   else tipElement.innerHTML = "<span>划线</span>" + count;
-        // } else {
-        //   tipElement.innerHTML = "<span>划线</span>";
-        // }
-        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
+        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+        tipElement.style.left =
+          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+        tipElement.style.visibility = "visible";
+        tipElement.style.background = "#000000c4";
+        if (ids && ids.length) {
+          const count = ids.length;
+          if (ids.includes(cur_operator))
+            tipElement.innerHTML = "<span>已划线</span>" + count;
+          else tipElement.innerHTML = "<span>划线</span>" + count;
+        } else {
+          tipElement.innerHTML = "<span>划线</span>";
+        }
+        // window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
       };
       const hiddenTip = () => {
-        // markItem && contextMarker.highlight(false, markItem.id);
-        // markItem = null;
-        // tipElement.style.visibility = "hidden";
-        // tipElement.style.background = "transparent";
-        window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
+        markItem && contextMarker.highlight(false, markItem.id);
+        markItem = null;
+        tipElement.style.visibility = "hidden";
+        tipElement.style.background = "transparent";
+        // window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
       };
 
       const contextMarker = new ContextMarker(root);
@@ -286,6 +286,7 @@
           hiddenTip();
           if (!item) return;
           markItem = item;
+          markItem.operator = cur_operator;
           const [startRect, endRect] = rects;
           // 如果items里有跟item id一样的元素，选中它，否则
           if (item && item.length)
