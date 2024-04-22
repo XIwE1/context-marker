@@ -4,17 +4,19 @@ import { RectPosition } from "../types/context";
 import { KONVA_PREFIX } from "../types/enum";
 import { IStage } from "../types/stage";
 
+export type StageGroup = {
+  id: string;
+  group: Konva.Group;
+  positions: RectPosition[];
+};
+
 class Stage implements IStage {
   private root: HTMLElement;
 
   private container: HTMLDivElement;
   private stage: Konva.Stage;
   private layer: Konva.Layer;
-  private groups: Array<{
-    id: string;
-    group: Konva.Group;
-    positions: RectPosition[];
-  }> = [];
+  private stageGroups: Array<StageGroup> = [];
 
   constructor(root: HTMLElement) {
     this.root = root;
@@ -60,14 +62,14 @@ class Stage implements IStage {
       // lineGroup.add(this.createLine(position, config));
       lineGroup.add(this.computedLineShape(config.lineShape)(position, config));
     });
-    this.groups.push({ id, group, positions });
+    this.stageGroups.push({ id, group, positions });
     this.layer.add(group);
   }
 
   deleteItem(id: string): boolean {
-    const index = this.groups.findIndex((i) => i.id === id);
+    const index = this.stageGroups.findIndex((item) => item.id === id);
     if (index === -1) return false;
-    this.groups.splice(index, 1);
+    this.stageGroups.splice(index, 1);
     const group = this.layer.find("#" + id)[0];
     group && group.destroy();
     return true;
@@ -75,7 +77,7 @@ class Stage implements IStage {
 
   clear() {
     this.layer.destroyChildren();
-    this.groups = [];
+    this.stageGroups = [];
   }
 
   destory(): void {
@@ -92,19 +94,74 @@ class Stage implements IStage {
     const { top, left } = this.getRootRectPosition();
     x = x - left;
     y = y - top;
-    return this.groups
-      .filter((i) => {
-        return i.positions.some((j) => {
+    return this.stageGroups
+      .filter((groupItem) => {
+        return groupItem.positions.some((rect) => {
           return (
-            x >= j.x && x <= j.x + j.width && y >= j.y && y <= j.y + j.height
+            x >= rect.x &&
+            x <= rect.x + rect.width &&
+            y >= rect.y &&
+            y <= rect.y + rect.height
           );
         });
       })
-      .map((i) => i.group.id());
+      .map((item) => item.group.id());
+  }
+
+  getAboveGroupIdByRect(startRect: DOMRect, endRect: DOMRect): string[] {
+    const { top, left } = this.getRootRectPosition();
+    const _startRect = {
+      ...startRect,
+      x: startRect.x - left,
+      y: startRect.y,
+    };
+    const _endRect = {
+      ...endRect,
+      x:
+        startRect.y === endRect.y
+          ? endRect.x + endRect.width - left
+          : endRect.x - left,
+      y: endRect.y,
+    };
+    const filterItems = this.stageGroups.filter((groupItem) => {
+      const isAbove = this.isItemAboveRect(groupItem, _startRect, _endRect);
+      return isAbove;
+    });
+    return filterItems.map((item) => item.group.id());
   }
 
   getStageItemById(id: string) {
-    return this.groups.find((i) => i.id === id);
+    return this.stageGroups.find((i) => i.id === id);
+  }
+
+  // rect是否在item之中
+  private isItemAboveRect(
+    groupItem: StageGroup,
+    startRect: DOMRect,
+    endRect: DOMRect
+  ) {
+    const startPosition = groupItem.positions[0];
+    const lastPosition = groupItem.positions[groupItem.positions.length - 1];
+    const endPosition = {
+      ...lastPosition,
+      x: lastPosition.x + lastPosition.width,
+    };
+    // 排除 item是单行 而rect不是
+    if (groupItem.positions.length === 1 && startRect.y !== endRect.y)
+      return false;
+    // 排除 小于start.y 大于end.y
+    if (startPosition.y > startRect.y) return false;
+    if (endPosition.y < endRect.y) return false;
+    // 筛选 在start.y 和 end.y 之间
+    if (startPosition.y < startRect.y && endPosition.y > endRect.y) return true;
+    // 筛选 等于start.y 且 大于等于start.x
+    if (startPosition.y === startRect.y) {
+      if (startPosition.x > startRect.x) return false;
+      if (endPosition.y > endRect.y) return true;
+      if (endPosition.y === endRect.y) return endPosition.x >= endRect.x;
+    }
+    if (endPosition.y === endRect.y && endPosition.x >= endRect.x) return true;
+    return false;
   }
 
   private createContainer() {
@@ -115,6 +172,7 @@ class Stage implements IStage {
     el.style.right = "0";
     el.style.bottom = "0";
     el.style.pointerEvents = "none";
+    el.style.zIndex = "-1";
     return el;
   }
 
@@ -151,7 +209,9 @@ class Stage implements IStage {
   private createRect(position: RectPosition, config: IMarkerConfig) {
     return new Konva.Rect({
       ...position,
+      height: position.height + 1,
       fill: config.rectFill,
+      zIndex: 1,
     });
   }
   private createWaveLine(position: RectPosition, config: IMarkerConfig) {

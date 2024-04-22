@@ -1,3 +1,4 @@
+import { MarkNode } from "../types/context";
 import { isValidTextNode } from "./valid";
 
 // 获取range头尾节点的文本
@@ -66,10 +67,13 @@ export function getWithinTextNodes(root: HTMLElement, start: Node, end: Node) {
   return textNodes;
 }
 
-export function isSamePath(source: number[], target: number[]) {
-  if (source.length !== target.length) return false;
-  for (let i = 0; i < source.length; i++) {
-    if (source[i] !== target[i]) {
+export function isSameNode(sourceNode: MarkNode, targetNode: MarkNode) {
+  // 比较offset是否相同
+  if (sourceNode.offset !== targetNode.offset) return false;
+  // 比较path是否相同
+  if (sourceNode.path.length !== targetNode.path.length) return false;
+  for (let i = 0; i < sourceNode.path.length; i++) {
+    if (sourceNode.path[i] !== targetNode.path[i]) {
       return false;
     }
   }

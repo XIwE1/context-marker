@@ -7,7 +7,7 @@ import { debounce, getInteraction } from "../util";
 import EventEmitter from "./event.emitter";
 import { EventHandlerMap } from "../types/types";
 import { EventType } from "../types/enum";
-import { isSamePath } from "../util/selection";
+import { isSameNode } from "../util/selection";
 
 const AOLLOWED_TYPES = ["absolute", "fixed", "relative"];
 
@@ -41,7 +41,7 @@ class ContextMarker
     this.observerPointerEnd();
   }
 
-  render(item: IMarkItem) {
+  render(item: IMarkItem, isClear = true) {
     const itemRects = this.factory.createItemRects(item);
     if (itemRects.length === 0) return false;
 
@@ -59,7 +59,7 @@ class ContextMarker
       lineVisible ?? true,
       rectVisible ?? false
     );
-    this.clearSelection();
+    isClear && this.clearSelection();
     return true;
   }
 
@@ -86,7 +86,7 @@ class ContextMarker
     targetItem.rectVisible = isHightlight;
     targetItem.lineVisible = !isHightlight;
     this.stage.deleteItem(id);
-    this.render(targetItem);
+    this.render(targetItem, false);
 
     // const stageItem = this.stage.getStageItemById(id);
     // stageItem!.group.children[0].visible(true);
@@ -175,20 +175,29 @@ class ContextMarker
         if (!markItem) return this.emit(this.event.PointerEnd, null);
 
         const markRects = this.getSelectionRect();
-        const {
-          startNode: { path: startPath },
-          endNode: { path: endPath },
-        } = markItem;
+        const { startNode, endNode } = markItem;
         const samePathItems: IMarkItem[] = [];
         this.items.forEach((targetItem) => {
           if (
             targetItem.length === markItem.length &&
-            isSamePath(startPath, targetItem.startNode.path) &&
-            isSamePath(endPath, targetItem.endNode.path)
+            isSameNode(startNode, targetItem.startNode) &&
+            isSameNode(endNode, targetItem.endNode)
           ) {
             samePathItems.push(targetItem);
           }
         });
+        // 如果没有完全相同路径的标记，自身可能是其他标记的一部分
+        if (!samePathItems.length && markRects?.length) {
+          const groupIds = this.stage.getAboveGroupIdByRect(
+            markRects[0],
+            markRects[1]
+          );
+          this.items.forEach((targetItem) => {
+            if (groupIds.includes(targetItem.id)) {
+              samePathItems.push(targetItem);
+            }
+          });
+        }
         this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
       });
     });
