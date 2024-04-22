@@ -206,7 +206,7 @@
 
       const showTip = (item, startRect, operators) => {
         console.log("showTip", item, startRect, operators);
-        const ids = [...new Set(operators)]
+        const ids = [...new Set(operators)];
         tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
         tipElement.style.left =
           startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
@@ -232,12 +232,10 @@
 
       const contextMarker = new ContextMarker(root);
       if (sources && sources.length) {
-        sources.forEach(
-          (item) =>
-            item.operator !== cur_operator &&
-            item.config &&
-            (item.config.lineShape = "dash")
-        );
+        sources.forEach((item) => {
+          item.config.lineShape =
+            item.operator === cur_operator ? "solid" : "dash";
+        });
         contextMarker.restore(sources);
       }
 
