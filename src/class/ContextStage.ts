@@ -1,6 +1,5 @@
 import Konva from "konva";
-import { IMarkerConfig } from "..";
-import { RectPosition } from "../types/context";
+import { IMarkerConfig, RectPosition } from "../types/context";
 import { KONVA_PREFIX } from "../types/enum";
 import { IStage } from "../types/stage";
 
