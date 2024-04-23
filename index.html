@@ -183,8 +183,8 @@
       import axios from "axios";
       const root = document.getElementById("app");
       let markItem = null;
-      const cur_operator = "user-B";
-      const sources = JSON.parse(localStorage.getItem("markData")) || [];
+      const cur_operator = "user-E";
+      let sources = JSON.parse(localStorage.getItem("markData")) || [];
 
       const tipElement = document.createElement("div");
       tipElement.style.userSelect = "none";
@@ -198,7 +198,8 @@
       tipElement.style.textAlign = "center";
       tipElement.style.zIndex = 2;
       tipElement.innerHTML = "<span>划线</span>";
-      tipElement.onclick = () => {
+      tipElement.onclick = (e) => {
+        e.stopPropagation();
         contextMarker.render(markItem);
         hiddenTip();
       };
@@ -212,22 +213,27 @@
           startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
         tipElement.style.visibility = "visible";
         tipElement.style.background = "#000000c4";
-        console.log({ ids });
         if (ids && ids.length) {
           const count = ids.length;
           if (ids.includes(cur_operator)) {
             tipElement.innerHTML = "<span>已划线</span>" + count;
-            tipElement.onclick = () => {
+            tipElement.onclick = (e) => {
+              e.stopPropagation();
               contextMarker.render(markItem);
               hiddenTip();
             };
           } else {
-            tipElement.onclick = () => {
+            tipElement.onclick = (e) => {
+              e.stopPropagation();
+              const _markItem = JSON.parse(JSON.stringify(markItem))
               contextMarker.render({
-                ...markItem,
+                ..._markItem,
                 id: "" + Date.now(),
                 create_at: Date.now(),
                 operator: cur_operator,
+                lineVisible: true,
+                rectVisible: false,
+                config: { ..._markItem, lineShape: "solid" },
               });
               hiddenTip();
             };
@@ -235,6 +241,11 @@
           }
         } else {
           tipElement.innerHTML = "<span>划线</span>";
+          tipElement.onclick = (e) => {
+              e.stopPropagation();
+              contextMarker.render(markItem);
+              hiddenTip();
+            };
         }
         // window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
       };
@@ -248,9 +259,12 @@
 
       const contextMarker = new ContextMarker(root);
       if (sources && sources.length) {
-        sources.forEach((item) => {
+        sources = sources.map((item) => {
+          item.lineVisible = true;
+          item.rectVisible = false;
           item.config.lineShape =
             item.operator === cur_operator ? "solid" : "dash";
+            return item;
         });
         contextMarker.restore(sources);
       }
@@ -303,7 +317,7 @@
                 isSameNode(matchItem.endNode, item.endNode)
             );
             const operators = filterItems.map((item) => item.operator);
-            markItem = { ...matchItem };
+            markItem = matchItem;
             showTip(matchItem, rects[0], operators);
           }
         })

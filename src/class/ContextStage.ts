@@ -211,7 +211,6 @@ class Stage implements IStage {
       ...position,
       height: position.height + 1,
       fill: config.rectFill,
-      zIndex: 1,
     });
   }
   private createWaveLine(position: RectPosition, config: IMarkerConfig) {
