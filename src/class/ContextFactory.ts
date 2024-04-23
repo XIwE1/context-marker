@@ -45,7 +45,7 @@ class ContextFactory implements IFactory {
       // text: endText,
     };
     return {
-      id: uuid(8),
+      // id: uuid(8),
       // text: selection.toString(),
       length: selection.toString().length,
       startNode,
