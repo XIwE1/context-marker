@@ -94,7 +94,14 @@ class ContextMarker
     return true;
   }
 
-  // delete
+  delete(id: string) {
+    if (!id) return false;
+    const targetItem = [...this.items].find((item) => item.id === id);
+    if (!targetItem) return false;
+    this.items.delete(targetItem);
+    this.stage.deleteItem(id);
+    return true;
+  }
   // search
   getSelectionItem(selection?: Selection | null) {
     selection = selection || window.getSelection();
