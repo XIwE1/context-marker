@@ -55,7 +55,7 @@ export type MarkNode = {
  * 标记操作的信息，id 文本 起始节点 画笔配置 线段/背景是否可见 操作人id
  */
 export interface IMarkItem {
-  id?: string;
+  id?: string | number;
   // text: string;
   length: number;
   startNode: MarkNode;
