@@ -87,10 +87,6 @@ class ContextMarker
     targetItem.lineVisible = !isHightlight;
     this.stage.deleteItem(id);
     this.render(targetItem, false);
-
-    // const stageItem = this.stage.getStageItemById(id);
-    // stageItem!.group.children[0].visible(true);
-    // stageItem!.group.children[1].visible(false);
     return true;
   }
 

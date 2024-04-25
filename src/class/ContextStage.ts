@@ -58,7 +58,6 @@ class Stage implements IStage {
       // 记录划线的位置 - 可能为多行
       positions.push(position);
       rectGroup.add(this.createRect(position, config));
-      // lineGroup.add(this.createLine(position, config));
       lineGroup.add(this.computedLineShape(config.lineShape)(position, config));
     });
     this.stageGroups.push({ id, group, positions });

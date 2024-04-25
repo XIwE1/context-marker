@@ -56,7 +56,6 @@ export type MarkNode = {
  */
 export interface IMarkItem {
   id?: string | number;
-  // text: string;
   length: number;
   startNode: MarkNode;
   endNode: MarkNode;
