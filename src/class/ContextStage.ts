@@ -65,7 +65,7 @@ class Stage implements IStage {
   }
 
   deleteItem(id: string | number): boolean {
-    const index = this.stageGroups.findIndex((item) => item.id === id);
+    const index = this.stageGroups.findIndex((item) => item.id === '' + id);
     if (index === -1) return false;
     this.stageGroups.splice(index, 1);
     const group = this.layer.find("#" + id)[0];
@@ -170,7 +170,7 @@ class Stage implements IStage {
     el.style.right = "0";
     el.style.bottom = "0";
     el.style.pointerEvents = "none";
-    el.style.zIndex = "0";
+    el.style.zIndex = "-1";
     return el;
   }
 

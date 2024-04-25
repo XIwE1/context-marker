@@ -51,7 +51,7 @@ class ContextMarker
     // this.stage.renderItem(itemRects, id, this.marker);
     this.stage.renderItem(
       itemRects,
-      id,
+      '' + id,
       {
         ...defaultMarkerConfig,
         ...config,
@@ -99,10 +99,9 @@ class ContextMarker
   }
   // search
   getSelectionItem(selection?: Selection | null) {
-    selection = selection || window.getSelection();
-    if (!selection || !isValidSelection(selection)) return null;
-    const markItem = this.factory.createSelectionItem(selection);
-    return markItem;
+    const _selection = selection || window.getSelection();
+    if (!_selection || !isValidSelection(_selection)) return null;
+    return this.factory.createSelectionItem(_selection);
   }
 
   getSelectionRect(selection?: Selection | null) {
@@ -136,7 +135,7 @@ class ContextMarker
   }
 
   getItemPosition(item: IMarkItem) {
-    const stageItem = this.stage.getStageItemById(item.id);
+    const stageItem = this.stage.getStageItemById(''+ item.id);
     if (!stageItem?.positions?.length) return null;
     return stageItem.positions.map((rectItem) => {
       rectItem.y += this.root.scrollTop;
@@ -149,7 +148,7 @@ class ContextMarker
     const ids = this.stage.getAllGroupIdByPointer(x, y);
     if (!ids?.length) return [];
     const filterItems = Array.from(this.items).filter((item) =>
-      ids.includes(item.id)
+      ids.includes('' + item.id)
     );
     return filterItems;
   }
@@ -195,7 +194,7 @@ class ContextMarker
             markRects[1]
           );
           this.items.forEach((targetItem) => {
-            if (groupIds.includes(targetItem.id)) {
+            if (groupIds.includes('' + targetItem.id)) {
               samePathItems.push(targetItem);
             }
           });

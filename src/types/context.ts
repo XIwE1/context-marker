@@ -48,8 +48,13 @@ export interface IMarkerConfig {
 export type MarkNode = {
   path: number[];
   offset: number;
-  // text: string;
 };
+
+export interface IBaseMarkItem {
+  length: number;
+  startNode: MarkNode;
+  endNode: MarkNode;
+}
 
 /**
  * 标记操作的信息，id 文本 起始节点 画笔配置 线段/背景是否可见 操作人id

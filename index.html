@@ -179,7 +179,7 @@
       <p></p>
     </div>
     <script src="./lib/index.iife.js"></script>
-    <script >
+    <script type="module">
       // import ContextMarker from "./src/index";
       const root = document.getElementById("app");
       let markItem = null;
@@ -243,7 +243,7 @@
           tipElement.innerHTML = "<span>划线</span>";
           tipElement.onclick = (e) => {
               e.stopPropagation();
-              contextMarker.render(markItem);
+              contextMarker.render({ id: "" + Date.now(), ...markItem});
               hiddenTip();
             };
         }
@@ -290,7 +290,7 @@
         if (minLengthElements.length === 1) return minLengthElements[0];
         // 优先选id是自己的
         const myElements = minLengthElements.find(
-          (item) => item.id === cur_operator
+          (item) => item.operator === cur_operator
         );
         if (myElements) return myElements;
         // 筛选创建时间最早的内容
