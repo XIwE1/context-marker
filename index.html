@@ -178,13 +178,13 @@
       ></video>
       <p></p>
     </div>
-    <script type="module">
-      import { ContextMarker } from "./src/index";
-      import axios from "axios";
+    <script src="./lib/index.iife.js"></script>
+    <script >
+      // import ContextMarker from "./src/index";
       const root = document.getElementById("app");
       let markItem = null;
-      const cur_operator = "user-A";
-      const sources = JSON.parse(localStorage.getItem("markData")) || [];
+      const cur_operator = "user-E";
+      let sources = JSON.parse(localStorage.getItem("markData")) || [];
 
       const tipElement = document.createElement("div");
       tipElement.style.userSelect = "none";
@@ -198,47 +198,84 @@
       tipElement.style.textAlign = "center";
       tipElement.style.zIndex = 2;
       tipElement.innerHTML = "<span>划线</span>";
-      tipElement.onclick = () => {
+      tipElement.onclick = (e) => {
+        e.stopPropagation();
         contextMarker.render(markItem);
         hiddenTip();
       };
       root.appendChild(tipElement);
 
       const showTip = (item, startRect, operators) => {
-        // console.log("showTip", item, startRect, operators);
-        const ids = [...new Set(operators)]
-        // tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
-        // tipElement.style.left =
-        //   startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
-        // tipElement.style.visibility = "visible";
-        // tipElement.style.background = "#000000c4";
-        // if (ids && ids.length) {
-        //   const count = ids.length;
-        //   if (ids.includes(cur_operator))
-        //     tipElement.innerHTML = "<span>已划线</span>" + count;
-        //   else tipElement.innerHTML = "<span>划线</span>" + count;
-        // } else {
-        //   tipElement.innerHTML = "<span>划线</span>";
-        // }
-        window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
+        console.log("showTip", item, startRect, operators);
+        const ids = [...new Set(operators)];
+        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+        tipElement.style.left =
+          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+        tipElement.style.visibility = "visible";
+        tipElement.style.background = "#000000c4";
+        if (ids && ids.length) {
+          const count = ids.length;
+          if (ids.includes(cur_operator)) {
+            tipElement.innerHTML = "<span>已划线</span>" + count;
+            tipElement.onclick = (e) => {
+              e.stopPropagation();
+              contextMarker.delete(markItem.id);
+              hiddenTip();
+            };
+          } else {
+            tipElement.onclick = (e) => {
+              e.stopPropagation();
+              const _markItem = JSON.parse(JSON.stringify(markItem))
+              contextMarker.render({
+                ..._markItem,
+                id: "" + Date.now(),
+                create_at: Date.now(),
+                operator: cur_operator,
+                lineVisible: true,
+                rectVisible: false,
+                config: { ..._markItem, lineShape: "solid" },
+              });
+              hiddenTip();
+            };
+            tipElement.innerHTML = "<span>划线</span>" + count;
+          }
+        } else {
+          tipElement.innerHTML = "<span>划线</span>";
+          tipElement.onclick = (e) => {
+              e.stopPropagation();
+              contextMarker.render(markItem);
+              hiddenTip();
+            };
+        }
+        // window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
       };
       const hiddenTip = () => {
-        // markItem && contextMarker.highlight(false, markItem.id);
-        // markItem = null;
-        // tipElement.style.visibility = "hidden";
-        // tipElement.style.background = "transparent";
-        window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
+        markItem && contextMarker.highlight(false, markItem.id);
+        markItem = null;
+        tipElement.style.visibility = "hidden";
+        tipElement.style.background = "transparent";
+        // window.flutter_inappwebview.callHandler("hideMarkUnderlinePopupMenu");
       };
 
       const contextMarker = new ContextMarker(root);
       if (sources && sources.length) {
-        sources.forEach(
-          (item) =>
-            item.operator !== cur_operator &&
-            item.config &&
-            (item.config.lineShape = "dash")
-        );
+        sources = sources.map((item) => {
+          item.lineVisible = true;
+          item.rectVisible = false;
+          item.config.lineShape =
+            item.operator === cur_operator ? "solid" : "dash";
+            return item;
+        });
         contextMarker.restore(sources);
+      }
+      function isSameNode(sourceNode, targetNode) {
+        // 比较offset是否相同
+        if (sourceNode.offset !== targetNode.offset) return false;
+        // 比较path是否相同
+        if (sourceNode.path.length !== targetNode.path.length) return false;
+        return (
+          JSON.stringify(sourceNode.path) === JSON.stringify(targetNode.path)
+        );
       }
 
       // TODO:移动端app手势兼容
@@ -251,12 +288,12 @@
           (item) => item.length === minLength
         );
         if (minLengthElements.length === 1) return minLengthElements[0];
-        // 筛选创建时间最早的内容
+        // 优先选id是自己的
         const myElements = minLengthElements.find(
           (item) => item.id === cur_operator
         );
-        // 优先选id是自己的
         if (myElements) return myElements;
+        // 筛选创建时间最早的内容
         const minCreateElement = minLengthElements.reduce((prev, current) =>
           prev.create_at > current.create_at ? current : prev
         );
@@ -268,16 +305,20 @@
           console.log("ContextMarker.event.CLICK", items);
           if (!markItem) {
             if (!items || !items.length) return hiddenTip();
+            // 找到匹配的item
             const matchItem = matchItems(items);
+            // 获取item对应的rect
             const rects = contextMarker.getItemPosition(matchItem);
             if (!rects || !rects.length) return hiddenTip();
             contextMarker.highlight(true, matchItem.id);
-            markItem = matchItem;
-            showTip(
-              matchItem,
-              rects[0],
-              items.map((item) => item.operator)
+            const filterItems = items.filter(
+              (item) =>
+                isSameNode(matchItem.startNode, item.startNode) &&
+                isSameNode(matchItem.endNode, item.endNode)
             );
+            const operators = filterItems.map((item) => item.operator);
+            markItem = matchItem;
+            showTip(matchItem, rects[0], operators);
           }
         })
         .on(contextMarker.event.PointerEnd, (item, items, rects) => {
@@ -285,7 +326,8 @@
           console.log("PointerEnd-items", items);
           hiddenTip();
           if (!item) return;
-          markItem = item;
+          markItem = { ...item };
+          markItem.operator = cur_operator;
           const [startRect, endRect] = rects;
           // 如果items里有跟item id一样的元素，选中它，否则
           if (item && item.length)
@@ -295,7 +337,6 @@
               items.map((item) => item.operator)
             );
         })
-
         .on(ContextMarker.event.CREATE, (item) => {
           const { rectVisible, lineVisible, ...otherParam } = item;
           const sourceItem = {

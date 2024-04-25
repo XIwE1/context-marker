@@ -2,21 +2,21 @@ import { MarkNode } from "../types/context";
 import { isValidTextNode } from "./valid";
 
 // 获取range头尾节点的文本
-export function getRangeStartEndText(range: Range) {
-  const { startContainer, endContainer, startOffset, endOffset } = range;
-  let startText, endText;
-  if (startContainer === endContainer) {
-    startText = startContainer.textContent?.slice(startOffset, endOffset) || "";
-    endText = startText;
-  } else {
-    startText = startContainer.textContent?.slice(startOffset) || "";
-    endText = endContainer.textContent?.slice(0, endOffset) || "";
-  }
-  return {
-    startText: range.startContainer.textContent || "",
-    endText: range.endContainer.textContent || "",
-  };
-}
+// export function getRangeStartEndText(range: Range) {
+//   const { startContainer, endContainer, startOffset, endOffset } = range;
+//   let startText, endText;
+//   if (startContainer === endContainer) {
+//     startText = startContainer.textContent?.slice(startOffset, endOffset) || "";
+//     endText = startText;
+//   } else {
+//     startText = startContainer.textContent?.slice(startOffset) || "";
+//     endText = endContainer.textContent?.slice(0, endOffset) || "";
+//   }
+//   return {
+//     startText: range.startContainer.textContent || "",
+//     endText: range.endContainer.textContent || "",
+//   };
+// }
 
 /**
  * 获取节点和偏移量对应的 DOMRect
@@ -72,10 +72,5 @@ export function isSameNode(sourceNode: MarkNode, targetNode: MarkNode) {
   if (sourceNode.offset !== targetNode.offset) return false;
   // 比较path是否相同
   if (sourceNode.path.length !== targetNode.path.length) return false;
-  for (let i = 0; i < sourceNode.path.length; i++) {
-    if (sourceNode.path[i] !== targetNode.path[i]) {
-      return false;
-    }
-  }
-  return true;
+  return JSON.stringify(sourceNode.path) === JSON.stringify(targetNode.path);
 }

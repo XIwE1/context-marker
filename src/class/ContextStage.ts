@@ -1,6 +1,5 @@
 import Konva from "konva";
-import { IMarkerConfig } from "..";
-import { RectPosition } from "../types/context";
+import { IMarkerConfig, RectPosition } from "../types/context";
 import { KONVA_PREFIX } from "../types/enum";
 import { IStage } from "../types/stage";
 
@@ -66,7 +65,7 @@ class Stage implements IStage {
     this.layer.add(group);
   }
 
-  deleteItem(id: string): boolean {
+  deleteItem(id: string | number): boolean {
     const index = this.stageGroups.findIndex((item) => item.id === id);
     if (index === -1) return false;
     this.stageGroups.splice(index, 1);
@@ -172,7 +171,7 @@ class Stage implements IStage {
     el.style.right = "0";
     el.style.bottom = "0";
     el.style.pointerEvents = "none";
-    el.style.zIndex = "-1";
+    el.style.zIndex = "0";
     return el;
   }
 
@@ -211,7 +210,6 @@ class Stage implements IStage {
       ...position,
       height: position.height + 1,
       fill: config.rectFill,
-      zIndex: 1,
     });
   }
   private createWaveLine(position: RectPosition, config: IMarkerConfig) {

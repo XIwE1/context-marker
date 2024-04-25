@@ -79,7 +79,7 @@ class ContextMarker
     });
   }
 
-  highlight(isHightlight: boolean, id: string) {
+  highlight(isHightlight: boolean, id: string | number) {
     if (!id) return false;
     const targetItem = [...this.items].find((item) => item.id === id);
     if (!targetItem) return false;
@@ -94,7 +94,13 @@ class ContextMarker
     return true;
   }
 
-  // delete
+  delete(id: string) {
+    if (!id) return false;
+    const targetItem = [...this.items].find((item) => item.id === id);
+    if (!targetItem) return false;
+    this.items.delete(targetItem);
+    return this.stage.deleteItem(id);
+  }
   // search
   getSelectionItem(selection?: Selection | null) {
     selection = selection || window.getSelection();

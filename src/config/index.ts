@@ -1,4 +1,4 @@
-import { IMarkerConfig } from "..";
+import { IMarkerConfig } from "../types/context";
 
 
 export const defaultMarkerConfig: IMarkerConfig = {
