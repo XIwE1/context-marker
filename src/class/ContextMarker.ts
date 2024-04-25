@@ -99,8 +99,7 @@ class ContextMarker
     const targetItem = [...this.items].find((item) => item.id === id);
     if (!targetItem) return false;
     this.items.delete(targetItem);
-    this.stage.deleteItem(id);
-    return true;
+    return this.stage.deleteItem(id);
   }
   // search
   getSelectionItem(selection?: Selection | null) {
