@@ -164,6 +164,14 @@ class ContextMarker
     this.stage.destory();
   }
 
+  addStageClass(className: string) {
+    this.stage.addClass(className);
+  }
+
+  removeStageClass(className: string) {
+    this.stage.removeClass(className);
+  }
+
   private observeResize() {
     const observer = new ResizeObserver(debounce(this.handleResize.bind(this)));
     observer.observe(this.root);

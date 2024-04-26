@@ -129,4 +129,12 @@ export interface IContextMarker {
    * 清空画布
    */
   clearStage(): void;
+  /**
+   * 为画布添加class
+   */
+  addClass(className: string): void;
+  /**
+   * 移除画布的指定class
+   */
+  removeClass(className: string): void;
 }

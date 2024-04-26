@@ -132,6 +132,14 @@ class Stage implements IStage {
     return this.stageGroups.find((i) => i.id === id);
   }
 
+  addClass(className: string) {
+    this.container.classList.add(className);
+  }
+
+  removeClass(className: string) {
+    this.container.classList.remove(className);
+  }
+
   // rect是否在item之中
   private isItemAboveRect(
     groupItem: StageGroup,
