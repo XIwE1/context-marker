@@ -33,20 +33,16 @@ class ContextFactory implements IFactory {
 
     if (!startPath || !endPath) return null;
 
-    // const { startText, endText } = getRangeStartEndText(range);
     const startNode: MarkNode = {
       path: startPath,
       offset: startOffset,
-      // text: startText,
     };
     const endNode: MarkNode = {
       path: endPath,
       offset: endOffset,
-      // text: endText,
     };
     return {
       // id: uuid(8),
-      // text: selection.toString(),
       length: selection.toString().length,
       startNode,
       endNode,

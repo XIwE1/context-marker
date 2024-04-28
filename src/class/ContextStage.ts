@@ -58,7 +58,6 @@ class Stage implements IStage {
       // 记录划线的位置 - 可能为多行
       positions.push(position);
       rectGroup.add(this.createRect(position, config));
-      // lineGroup.add(this.createLine(position, config));
       lineGroup.add(this.computedLineShape(config.lineShape)(position, config));
     });
     this.stageGroups.push({ id, group, positions });
@@ -66,7 +65,7 @@ class Stage implements IStage {
   }
 
   deleteItem(id: string | number): boolean {
-    const index = this.stageGroups.findIndex((item) => item.id === id);
+    const index = this.stageGroups.findIndex((item) => item.id === '' + id);
     if (index === -1) return false;
     this.stageGroups.splice(index, 1);
     const group = this.layer.find("#" + id)[0];
@@ -133,6 +132,14 @@ class Stage implements IStage {
     return this.stageGroups.find((i) => i.id === id);
   }
 
+  addClass(className: string) {
+    this.container.classList.add(className);
+  }
+
+  removeClass(className: string) {
+    this.container.classList.remove(className);
+  }
+
   // rect是否在item之中
   private isItemAboveRect(
     groupItem: StageGroup,
@@ -171,7 +178,7 @@ class Stage implements IStage {
     el.style.right = "0";
     el.style.bottom = "0";
     el.style.pointerEvents = "none";
-    el.style.zIndex = "0";
+    el.style.zIndex = "-1";
     return el;
   }
 

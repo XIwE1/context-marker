@@ -51,7 +51,7 @@ class ContextMarker
     // this.stage.renderItem(itemRects, id, this.marker);
     this.stage.renderItem(
       itemRects,
-      id,
+      "" + id,
       {
         ...defaultMarkerConfig,
         ...config,
@@ -87,10 +87,6 @@ class ContextMarker
     targetItem.lineVisible = !isHightlight;
     this.stage.deleteItem(id);
     this.render(targetItem, false);
-
-    // const stageItem = this.stage.getStageItemById(id);
-    // stageItem!.group.children[0].visible(true);
-    // stageItem!.group.children[1].visible(false);
     return true;
   }
 
@@ -103,10 +99,9 @@ class ContextMarker
   }
   // search
   getSelectionItem(selection?: Selection | null) {
-    selection = selection || window.getSelection();
-    if (!selection || !isValidSelection(selection)) return null;
-    const markItem = this.factory.createSelectionItem(selection);
-    return markItem;
+    const _selection = selection || window.getSelection();
+    if (!_selection || !isValidSelection(_selection)) return null;
+    return this.factory.createSelectionItem(_selection);
   }
 
   getSelectionRect(selection?: Selection | null) {
@@ -140,7 +135,7 @@ class ContextMarker
   }
 
   getItemPosition(item: IMarkItem) {
-    const stageItem = this.stage.getStageItemById(item.id);
+    const stageItem = this.stage.getStageItemById("" + item.id);
     if (!stageItem?.positions?.length) return null;
     return stageItem.positions.map((rectItem) => {
       rectItem.y += this.root.scrollTop;
@@ -153,7 +148,7 @@ class ContextMarker
     const ids = this.stage.getAllGroupIdByPointer(x, y);
     if (!ids?.length) return [];
     const filterItems = Array.from(this.items).filter((item) =>
-      ids.includes(item.id)
+      ids.includes("" + item.id)
     );
     return filterItems;
   }
@@ -169,6 +164,14 @@ class ContextMarker
     this.stage.destory();
   }
 
+  addStageClass(className: string) {
+    this.stage.addClass(className);
+  }
+
+  removeStageClass(className: string) {
+    this.stage.removeClass(className);
+  }
+
   private observeResize() {
     const observer = new ResizeObserver(debounce(this.handleResize.bind(this)));
     observer.observe(this.root);
@@ -182,27 +185,22 @@ class ContextMarker
 
         const markRects = this.getSelectionRect();
         const { startNode, endNode } = markItem;
-        const samePathItems: IMarkItem[] = [];
-        this.items.forEach((targetItem) => {
-          if (
-            targetItem.length === markItem.length &&
-            isSameNode(startNode, targetItem.startNode) &&
-            isSameNode(endNode, targetItem.endNode)
-          ) {
-            samePathItems.push(targetItem);
-          }
-        });
+        let samePathItems: IMarkItem[] = [];
+        samePathItems = [...this.items].filter(
+          (curItem) =>
+            curItem.length === markItem.length &&
+            isSameNode(startNode, curItem.startNode) &&
+            isSameNode(endNode, curItem.endNode)
+        );
         // 如果没有完全相同路径的标记，自身可能是其他标记的一部分
         if (!samePathItems.length && markRects?.length) {
           const groupIds = this.stage.getAboveGroupIdByRect(
             markRects[0],
             markRects[1]
           );
-          this.items.forEach((targetItem) => {
-            if (groupIds.includes(targetItem.id)) {
-              samePathItems.push(targetItem);
-            }
-          });
+          samePathItems = [...this.items].filter((curItem) =>
+            groupIds.includes("" + curItem.id)
+          );
         }
         this.emit(this.event.PointerEnd, markItem, samePathItems, markRects);
       });

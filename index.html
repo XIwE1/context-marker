@@ -179,11 +179,11 @@
       <p></p>
     </div>
     <script src="./lib/index.iife.js"></script>
-    <script >
+    <script type="module">
       // import ContextMarker from "./src/index";
       const root = document.getElementById("app");
       let markItem = null;
-      const cur_operator = "user-E";
+      const cur_operator = "user-B";
       let sources = JSON.parse(localStorage.getItem("markData")) || [];
 
       const tipElement = document.createElement("div");
@@ -208,11 +208,13 @@
       const showTip = (item, startRect, operators) => {
         console.log("showTip", item, startRect, operators);
         const ids = [...new Set(operators)];
-        tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
-        tipElement.style.left =
-          startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
-        tipElement.style.visibility = "visible";
-        tipElement.style.background = "#000000c4";
+        setTimeout(() => {
+          tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+          tipElement.style.left =
+            startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+          tipElement.style.visibility = "visible";
+          tipElement.style.background = "#000000c4";
+        })
         if (ids && ids.length) {
           const count = ids.length;
           if (ids.includes(cur_operator)) {
@@ -225,7 +227,7 @@
           } else {
             tipElement.onclick = (e) => {
               e.stopPropagation();
-              const _markItem = JSON.parse(JSON.stringify(markItem))
+              const _markItem = JSON.parse(JSON.stringify(markItem));
               contextMarker.render({
                 ..._markItem,
                 id: "" + Date.now(),
@@ -242,10 +244,10 @@
         } else {
           tipElement.innerHTML = "<span>划线</span>";
           tipElement.onclick = (e) => {
-              e.stopPropagation();
-              contextMarker.render(markItem);
-              hiddenTip();
-            };
+            e.stopPropagation();
+            contextMarker.render({ id: "" + Date.now(), ...markItem });
+            hiddenTip();
+          };
         }
         // window.flutter_inappwebview.callHandler("showMarkUnderlinePopupMenu", item, item.length, ids);
       };
@@ -264,7 +266,7 @@
           item.rectVisible = false;
           item.config.lineShape =
             item.operator === cur_operator ? "solid" : "dash";
-            return item;
+          return item;
         });
         contextMarker.restore(sources);
       }
@@ -279,7 +281,7 @@
       }
 
       // TODO:移动端app手势兼容
-      root.addEventListener("selectionchange", (e) => {});
+      // root.addEventListener("selectionchange", (e) => {});
       const matchItems = (items) => {
         if (items.length === 1) return items[0];
         // 筛选最短的内容
@@ -290,7 +292,7 @@
         if (minLengthElements.length === 1) return minLengthElements[0];
         // 优先选id是自己的
         const myElements = minLengthElements.find(
-          (item) => item.id === cur_operator
+          (item) => item.operator === cur_operator
         );
         if (myElements) return myElements;
         // 筛选创建时间最早的内容
