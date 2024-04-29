@@ -257,7 +257,7 @@ class Stage implements IStage {
       points: [x, y + height, x + width, y + height],
       stroke: config.lineStroke,
       strokeWidth: config.lineWidth,
-      dash: [6, 3],
+      dash: [7, 7],
     });
   }
 }

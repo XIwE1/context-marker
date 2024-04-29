@@ -16,6 +16,7 @@ export enum UserEvent {
   touchstart = "touchstart",
   click = "click",
   mouseover = "mouseover",
+  pointerup = 'pointerup'
 }
 
 export enum KONVA_PREFIX {
