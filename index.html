@@ -209,12 +209,18 @@
         console.log("showTip", item, startRect, operators);
         const ids = [...new Set(operators)];
         setTimeout(() => {
-          tipElement.style.top = startRect.y - tipElement.clientHeight - 2 + "px";
+          let top = startRect.y - tipElement.clientHeight - 4;
+          if (top < 0 || window.scrollY > top)
+            top = startRect.y + startRect.height + 4;
+          tipElement.style.top = top + "px";
           tipElement.style.left =
-            startRect.x + startRect.width / 2 - tipElement.clientWidth / 2 + "px";
+            startRect.x +
+            startRect.width / 2 -
+            tipElement.clientWidth / 2 +
+            "px";
           tipElement.style.visibility = "visible";
           tipElement.style.background = "#000000c4";
-        })
+        });
         if (ids && ids.length) {
           const count = ids.length;
           if (ids.includes(cur_operator)) {
